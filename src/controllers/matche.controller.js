@@ -12,7 +12,7 @@ export async function getMatches(req, res) {
   if(!parsed.success) {
     return res.status(400).json({
       error: "Invalid query",
-      details: JSON.stringify(parsed.error)
+      details: parsed.error.issues,
     });
   }
 
@@ -41,11 +41,11 @@ export async function createMatch(req, res) {
   if(!parsed.success) {
     return res.status(400).json({
       error: "Invalid Payload",
-      details: JSON.stringify(parsed.error)
+      details: parsed.error.issues,
     });
   }
-
   const { startTime, endTime, homeScore, awayScore } = parsed.data;
+
 
   try {
     const [event] = await db.insert(matches).values({
