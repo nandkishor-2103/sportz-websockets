@@ -14,16 +14,12 @@ export const matchIdParamSchema = z.object({
   id: z.coerce.number().int().positive(),
 })
 
-export const isDateString = z.string().refine((value) => !isNaN(Date.parse(value)), {
-  message: 'Invalid ISO date string',
-});
-
 export const createMatchSchema = z.object({
   sport: z.string().min(1),
   homeTeam: z.string().min(1),
   awayTeam: z.string().min(1),
-  startTime: isDateString,
-  endTime: isDateString,
+  startTime: z.iso.datetime(),
+  endTime: z.iso.datetime(),
   homeScore: z.number().int().nonnegative().optional(),
   awayScore: z.number().int().nonnegative().optional(),
 }).superRefine((data, ctx) => {
