@@ -37,7 +37,6 @@ export async function getMatches(req, res) {
 
 export async function createMatch(req, res) {
   const parsed = createMatchSchema.safeParse(req.body);
-  const {data: { startTime, endTime, homeScore, awayScore }} = parsed;
 
   if(!parsed.success) {
     return res.status(400).json({
@@ -45,6 +44,8 @@ export async function createMatch(req, res) {
       details: JSON.stringify(parsed.error)
     });
   }
+
+  const { startTime, endTime, homeScore, awayScore } = parsed.data;
 
   try {
     const [event] = await db.insert(matches).values({
