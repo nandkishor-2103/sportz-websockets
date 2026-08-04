@@ -1,8 +1,17 @@
-import { app } from "./app.js";
+import http from 'http';
+import { app } from './app.js';
+import { attachWebSocketServer } from './ws-socket/ws-server.socket.js';
 
+const PORT = Number(process.env.PORT || 8000);
+const HOST = process.env.HOST || '0.0.0.0';
 
-const PORT = 3000;
+const server = http.createServer(app);
 
-app.listen(PORT, () => {
-  console.log(`Server is running on http://localhost:${PORT}`);
+const { broadcastMatchCreated } = attachWebSocketServer(server);
+app.locals.broadcastMatchCreated = broadcastMatchCreated;
+
+server.listen(PORT, HOST, () => {
+  const baseUrl = HOST === "0.0.0.0" ? `http://localhost:${PORT}` : `http://${HOST}:${PORT}`;
+  console.log(`Server is running on ${baseUrl}`);
+  console.log(`WebSocket server is running on ${baseUrl.replace("http", "ws")}/ws`);
 });
